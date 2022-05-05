@@ -5,7 +5,6 @@
 #include "Window.hpp"
 #include "textbox.hpp"
 #include <vector>
-#include <iostream>
 #include <fstream>
 #include <functional>
 
@@ -31,72 +30,41 @@ class Calculator : public Window
         int ered;
         bool muvelet;
         muveletek allapot;
+        int meret;
+        int kozpontx;
+        int kozponty;
 
     public:
         Calculator()
         {
+            meret = 80;
+            kozpontx = 0;
+            kozponty = 2*meret;
             muvelet = false;
             current = 0;
             previous = 0;
-            std::cout << allapot << std::endl;
             ered = 0;
             std::vector<PushButton*> v;
-            m_elemek.push_back(new PushButton(this, XX/5.0, 400, 30, 30, "1", [this](){
-                if(current == ered) current = 0;
-                current = current * 10 + 1;
-                txt->setText(std::to_string(current));
-            }));
-            m_elemek.push_back(new PushButton(this, XX/5.0+30, 400, 30, 30, "2", [this](){
-                if(current == ered) current = 0;
-                current = current * 10 + 2;
-                txt->setText(std::to_string(current));
-            }));
-            m_elemek.push_back(new PushButton(this, XX/5.0+60, 400, 30, 30, "3", [this](){
-                if(current == ered) current = 0;
-                current = current * 10 + 3;
-                txt->setText(std::to_string(current));
-            }));
-            m_elemek.push_back(new PushButton(this, XX/5.0, 430, 30, 30, "4", [this](){
-                if(current == ered) current = 0;
-                current = current * 10 + 4;
-                txt->setText(std::to_string(current));
-            }));
-            m_elemek.push_back(new PushButton(this, XX/5.0+30, 430, 30, 30, "5", [this](){
-                if(current == ered) current = 0;
-                current = current * 10 + 5;
-                txt->setText(std::to_string(current));
-            }));
-            m_elemek.push_back(new PushButton(this, XX/5.0+60, 430, 30, 30, "6", [this](){
-                if(current == ered) current = 0;
-                current = current * 10 + 6;
-                txt->setText(std::to_string(current));
-            }));
-            m_elemek.push_back(new PushButton(this, XX/5.0, 460, 30, 30, "7", [this](){
-                if(current == ered) current = 0;
-                current = current * 10 + 7;
-                txt->setText(std::to_string(current));
-            }));
-            m_elemek.push_back(new PushButton(this, XX/5.0+30, 460, 30, 30, "8", [this](){
-                if(current == ered) current = 0;
-                current = current * 10 + 8;
-                txt->setText(std::to_string(current));
-            }));
-            m_elemek.push_back(new PushButton(this, XX/5.0+60, 460, 30, 30, "9", [this](){
-                if(current == ered) current = 0;
-                current = current * 10 + 9;
-                txt->setText(std::to_string(current));
-            }));
-            m_elemek.push_back(new PushButton(this, XX/5.0+30, 490, 30, 30, "0", [this](){
+            for (int i = 0; i < 9; i++)
+            {
+                m_elemek.push_back(new PushButton(this, kozpontx + i%3 * meret, kozponty + i/3 * meret, meret, meret, std::to_string(i+1), [=](){
+                    if(current == ered) current = 0;
+                    current = current * 10 + i + 1;
+                    txt->setText(std::to_string(current));
+                }));
+            }
+            
+            m_elemek.push_back(new PushButton(this, kozpontx+meret, kozponty + 3*meret, meret, meret, "0", [this](){
                 if(current == ered) current = 0;
                 current = current * 10;
                 txt->setText(std::to_string(current));
             }));
-            txt = new textBox(this, XX/5.0, 370, 150, 30, "");
-            add = new PushButton(this, XX/5.0+90, 400, 30, 30, "+", [this](){allapot = ADD; muvelet = true; previous = current; current = 0; txt->setText("");});
-            sub = new PushButton(this, XX/5.0 + 120, 400, 30, 30, "-", [this](){allapot = SUBSTRACT; muvelet = true; previous = current; current = 0; txt->setText("");});
-            multi = new PushButton(this, XX/5.0 + 90, 430, 30, 30, "*", [this](){allapot = MULTIPLY; muvelet = true; previous = current; current = 0; txt->setText("");});
-            div = new PushButton(this, XX/5.0 + 120, 430, 30, 30, "/", [this](){allapot = DIVISION; muvelet = true; previous = current; current = 0; txt->setText("");});
-            equal = new PushButton(this, XX/5.0 + 90, 460, 60, 60, "=", [this](){if(allapot < 4)muvVegez(allapot);});
+            txt = new textBox(this, kozpontx, kozponty - meret, 5*meret, meret, "");
+            add = new PushButton(this, kozpontx+3*meret, kozponty, meret, meret, "+", [this](){allapot = ADD; muvelet = true; previous = current; current = 0; txt->setText("");});
+            sub = new PushButton(this, kozpontx + 3*meret, kozponty + meret, meret, meret, "-", [this](){allapot = SUBSTRACT; muvelet = true; previous = current; current = 0; txt->setText("");});
+            multi = new PushButton(this, kozpontx + 4*meret, kozponty, meret, meret, "*", [this](){allapot = MULTIPLY; muvelet = true; previous = current; current = 0; txt->setText("");});
+            div = new PushButton(this, kozpontx + 4*meret, kozponty + meret, meret, meret, "/", [this](){allapot = DIVISION; muvelet = true; previous = current; current = 0; txt->setText("");});
+            equal = new PushButton(this, kozpontx + 3*meret, kozponty + 2*meret, 2 * meret, 2*meret, "=", [this](){if(allapot < 4)muvVegez(allapot);});
         }
 
         void muvVegez(muveletek muv)
@@ -129,10 +97,7 @@ class Calculator : public Window
 
         void esemeny(const std::string& ki_mondta)
         {}
-
 };
-
-
 
 int main()
 {
